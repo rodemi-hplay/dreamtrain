@@ -1,0 +1,48 @@
+rules_version = '2';
+
+// 삼척 꿈의 열차 — Firestore 보안 규칙
+// - 학생(익명 로그인): 자기 기록(runs/{runId})만 만들고 고칠 수 있어요. 다른 친구 기록은 읽을 수 없어요.
+// - 교사: admins/{교사 UID} 문서가 있는 계정만 모든 기록을 읽고 지울 수 있어요.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isTeacher() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function str(v, n) {
+      return v is string && v.size() <= n;
+    }
+
+    function validRun(runId) {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['uid', 'runId', 'name', 'startedAt', 'updatedAt', 'elapsedSec', 'hints', 'keys',
+                               'roomIdx', 'stage', 'done', 'status', 'values', 'barrier', 'light', 'dream',
+                               'dreamIc', 'reflection'])
+        && d.uid == request.auth.uid
+        && d.runId == runId
+        && str(d.name, 20) && d.name.size() > 0
+        && str(d.stage, 40) && str(d.status, 20)
+        && str(d.barrier, 40) && str(d.light, 60) && str(d.dream, 40) && str(d.dreamIc, 16)
+        && d.values is list && d.values.size() <= 3
+        && d.hints is int && d.keys is int && d.elapsedSec is int && d.roomIdx is int
+        && d.startedAt is number && d.updatedAt is number
+        && d.done is bool
+        && d.reflection is map && d.reflection.keys().hasOnly(['future', 'learned', 'todo'])
+        && str(d.reflection.future, 400) && str(d.reflection.learned, 400) && str(d.reflection.todo, 400);
+    }
+
+    match /runs/{runId} {
+      allow read, delete: if isTeacher();
+      allow create: if request.auth != null && validRun(runId);
+      allow update: if request.auth != null && resource.data.uid == request.auth.uid && validRun(runId);
+    }
+
+    // 교사 허용 목록: Firebase 콘솔에서 직접 만들어요 (앱에서는 쓸 수 없어요)
+    match /admins/{uid} {
+      allow get: if request.auth != null && request.auth.uid == uid;
+      allow list, write: if false;
+    }
+  }
+}
