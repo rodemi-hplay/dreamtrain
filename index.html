@@ -407,24 +407,81 @@ const fmt = s => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60
 const elapsedSec = () => S.startAt ? Math.floor(((S.endAt || Date.now()) - S.startAt) / 1000) : 0;
 function go(name, arg) { HIST.push({ name, arg }); SCREENS[name](arg); }
 function back() { if (HIST.length > 1) { HIST.pop(); const t = HIST[HIST.length - 1]; SCREENS[t.name](t.arg); } }
-function render(html) { app.innerHTML = html; window.scrollTo(0, 0); bindTop(); }
+function render(html) { app.innerHTML = html; window.scrollTo(0, 0); bindTop(); BGM.sync(!!$("#tbMusic")); }
 function topbar() {
   return `<div class="topbar"><div class="tb"><button class="tbtn" id="tbBack" ${HIST.length > 1 ? "" : "disabled"}>◀ 뒤로</button><span class="who">🚆 ${esc(S.name)}</span></div>
   <div class="tb"><span class="clock" id="clock" aria-label="걸린 시간">⏱ ${fmt(elapsedSec())}</span><span class="keys" aria-label="모은 열쇠">${S.keys.map((k, i) => `<span class="keyslot ${k ? "got" : ""}">${k ? CODE[i] : "🔑"}</span>`).join("")}</span>
-  <button class="tbtn" id="tbRead">🔊 읽어 줘</button><button class="tbtn" id="tbRestart">🔄 처음부터</button></div></div>`;
+  <button class="tbtn" id="tbMusic" aria-pressed="${BGM.enabled()}">${BGM.label()}</button><button class="tbtn" id="tbRestart">🔄 처음부터</button></div></div>`;
 }
 function bindTop() {
   const b = $("#tbBack"); if (b) b.onclick = back;
   const r = $("#tbRestart"); if (r) r.onclick = askRestart;
-  const s = $("#tbRead"); if (s) s.onclick = readAloud;
+  const s = $("#tbMusic"); if (s) s.onclick = () => { BGM.toggle(); s.textContent = BGM.label(); s.setAttribute("aria-pressed", BGM.enabled()); };
 }
 function tick() { const c = $("#clock"); if (c) c.textContent = "⏱ " + fmt(elapsedSec()); }
-function readAloud() {
-  try {
-    const t = $$(".bubble, .opt, h2").map(e => e.innerText).join(". ").slice(0, 600);
-    speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = "ko-KR"; u.rate = .95; speechSynthesis.speak(u);
-  } catch (e) { toast("이 기기에서는 읽어 주기를 쓸 수 없어요"); }
-}
+/* 배경음악: 음원 파일 없이 Web Audio로 직접 연주하는 자작 8비트 곡. 게임 화면에서만 나와요 */
+const BGM = (() => {
+  const KEY = "sc_dreamtrain_music", STEP = 60 / 152 / 4, LOOK = .15;
+  const NOTE = { g: 67, a: 69, b: 71, 1: 72, 2: 74, 3: 76, 4: 77, 5: 79, 6: 81, 7: 83, 8: 84, 9: 86 };
+  const C = [36, [60, 64, 67]], G = [31, [59, 62, 67]], A = [33, [60, 64, 69]], F = [29, [60, 65, 69]], D = [38, [62, 65, 69]];
+  const BARS = [C, G, A, F, C, G, F, G, A, F, C, G, D, G, C, G];
+  // 한 글자 = 8분음표, - 는 늘임, . 은 쉼표
+  const MEL = ["1-3-5-35", "-42-b-25", "3-1-a-13", "4-6-5-43", "1-3-5-8-", "7-5-2-57", "6-54-6-8", "5-2-5-7.",
+    "6-8-6-36", "6-4-1-46", "5-3-1-35", "-7-5-2-5", "4-6-9-86", "7-5-7-9-", "8-5-3-58", "7-9-7-5-"].join("");
+  let on = LS.get(KEY, true) !== false, inGame = false, playing = false, warned = false;
+  let ctx = null, out = null, bus = null, noise = null, timer = null, step = 0, at = 0;
+  const hz = m => 440 * 2 ** ((m - 69) / 12);
+  function env(t, len, vol) { const g = ctx.createGain(); g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .006); g.gain.exponentialRampToValueAtTime(.0001, t + len); g.connect(bus); return g; }
+  function tone(type, m, t, len, vol) { const o = ctx.createOscillator(); o.type = type; o.frequency.value = hz(m); o.connect(env(t, len, vol)); o.start(t); o.stop(t + len + .02); }
+  function kick(t) { const o = ctx.createOscillator(); o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(45, t + .1); o.connect(env(t, .13, .5)); o.start(t); o.stop(t + .15); }
+  function hit(t, len, vol, cut) { const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(); s.buffer = noise; f.type = "highpass"; f.frequency.value = cut; s.connect(f).connect(env(t, len, vol)); s.start(t); s.stop(t + len + .02); }
+  function play16(i, t) {
+    const s = i % 16, ch = BARS[Math.floor(i / 16)];
+    if (s % 2 === 0) {
+      const k = i / 2, m = NOTE[MEL[k]];
+      if (m) { let n = 1; while (MEL[k + n] === "-") n++; tone("square", m, t, n * 2 * STEP * .92, .13); }
+      tone("triangle", ch[0] + (s % 8 === 4 ? 12 : 0), t, STEP * 1.7, .34);
+      hit(t, .035, s % 4 === 2 ? .12 : .06, 7000);
+    }
+    tone("square", ch[1][s % 3] + 12, t, STEP * .7, .028);
+    if (s === 0 || s === 6 || s === 8) kick(t);
+    if (s === 4 || s === 12) hit(t, .12, .2, 1800);
+  }
+  function pump() {
+    if (ctx.state !== "running") return;
+    if (at < ctx.currentTime) at = ctx.currentTime + .05;
+    while (at < ctx.currentTime + LOOK) { play16(step, at); step = (step + 1) % (BARS.length * 16); at += STEP; }
+  }
+  function begin() {
+    if (!ctx) {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      out = ctx.createDynamicsCompressor(); out.connect(ctx.destination);
+      noise = ctx.createBuffer(1, ctx.sampleRate * .2, ctx.sampleRate);
+      const d = noise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    }
+    ctx.resume();
+    bus = ctx.createGain(); bus.gain.setValueAtTime(.0001, ctx.currentTime); bus.gain.exponentialRampToValueAtTime(.55, ctx.currentTime + .25); bus.connect(out);
+    at = 0; playing = true; timer = setInterval(pump, 30); pump();
+  }
+  function end() {
+    clearInterval(timer); playing = false;
+    const b = bus, c = ctx; b.gain.cancelScheduledValues(c.currentTime); b.gain.setTargetAtTime(.0001, c.currentTime, .04);
+    setTimeout(() => { b.disconnect(); if (!playing) c.suspend(); }, 220);
+  }
+  function apply() {
+    const want = on && inGame; if (want === playing) return;
+    try { want ? begin() : end(); }
+    catch (e) { playing = false; console.warn("배경음악을 틀지 못했어요", e); if (!warned) { warned = true; toast("이 기기에서는 배경음악을 틀 수 없어요"); } }
+  }
+  document.addEventListener("visibilitychange", () => { if (!ctx || !playing) return; document.hidden ? ctx.suspend() : ctx.resume(); });
+  document.addEventListener("pointerdown", () => { if (ctx && playing && !document.hidden && ctx.state !== "running") ctx.resume(); });
+  return {
+    enabled: () => on,
+    label: () => on ? "🎵 음악 끄기" : "🔇 음악 켜기",
+    sync(v) { inGame = v; apply(); },
+    toggle() { on = !on; LS.set(KEY, on); apply(); }
+  };
+})();
 function askRestart() {
   modal(`<div class="stack center">${botSay("정말 <b>처음부터 다시</b> 할까? 지금까지 모은 열쇠와 답이 모두 지워져.", "think")}<div class="row cx"><button class="btn white" data-close>아니, 계속할래</button><button class="btn coral" id="yesRe">응, 처음부터!</button></div></div>`);
   $("#yesRe").onclick = () => { $(".modal").remove(); restart(); };
