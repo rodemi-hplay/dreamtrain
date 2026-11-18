@@ -171,6 +171,73 @@ table.t tr.clk{cursor:pointer}table.t tr.clk:hover{background:#f4fbff}
 .show .talk{background:#fff8d6;border:3px solid var(--line);border-radius:18px;padding:12px 18px;font-family:var(--display);font-size:clamp(20px,2.2vw,28px);color:var(--ink)}
 .show .ctrl{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
 .show .ctrl .cnt{font-family:var(--display);font-size:24px;min-width:90px;text-align:center}
+.count{justify-self:end;font-size:15px;color:var(--muted)}
+.freebox{background:#fff8d6;border:3px dashed var(--line);border-radius:16px;padding:14px}
+/* 태블릿·휴대폰 화면 */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.refls{grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr))}
+.modal .card{max-height:92dvh}
+.form input{width:100%;min-width:0}
+.pill{max-width:100%}
+@media (max-width:1024px){
+  body{font-size:19px;word-break:keep-all;overflow-wrap:anywhere}
+  .tbtn,.chipbtn,.tab{min-height:44px}
+  .btn{min-height:48px}
+  .chipbtn{text-align:left;border-radius:16px;padding:6px 12px}
+  .bubble{font-size:20px}
+  .show{padding:14px}
+  .show .slide{padding:20px}
+}
+@media (max-width:620px){
+  body{font-size:18px}
+  #app{padding:0 10px 32px}
+  #app h2{font-size:clamp(23px,6.8vw,28px)!important}
+  .topbar{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:6px;margin:0 -4px 12px;padding:6px 8px;border-radius:0 0 14px 14px}
+  .topbar .tb{display:contents}
+  .topbar .who{grid-area:1/2;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tbtn{min-width:44px;padding:2px 8px;font-size:18px}
+  .tbtn .lbl{display:none}
+  #tbBack{grid-area:1/1}#tbMusic{grid-area:1/3}#tbRestart{grid-area:1/4}
+  .clock{grid-area:2/1/3/3;justify-self:start;min-width:78px;padding:2px 8px;font-size:18px}
+  .keys{grid-area:2/3/3/5;justify-self:end;gap:3px}
+  .keyslot{width:27px;height:27px;border-radius:7px;font-size:15px}
+  .card{padding:14px;border-radius:18px;box-shadow:4px 4px 0 var(--line)}
+  .stack{gap:12px}
+  .btn{padding:10px 16px;font-size:19px}
+  .btn.big{width:100%;font-size:23px;padding:13px 16px}
+  .say{gap:8px}.say .who{width:58px}
+  .bubble{min-width:0;padding:10px 12px;font-size:18px}
+  .hero{gap:12px}.hero h1{font-size:clamp(36px,11vw,46px)}.hero .sub{font-size:19px}
+  .hero .row .btn{flex:1 1 100%}
+  .form{max-width:none}
+  .panel .pb{padding:4px 9px;font-size:15px}.panel .boom{font-size:32px}
+  .opts{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .opt{padding:10px 6px;font-size:18px;box-shadow:3px 3px 0 var(--line)}.opt .ic{font-size:36px}.opt small{font-size:14px}
+  .subjopts{grid-template-columns:1fr}.sopt{font-size:19px}
+  .dex{grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+  .jc{min-height:96px;padding:8px 4px;font-size:16px}.jc .ic{font-size:34px}
+  .jobview .big{font-size:60px}
+  .match{gap:9px}.match .col{gap:8px}
+  .mcard{flex-direction:column;justify-content:center;gap:3px;padding:8px 5px;text-align:center;font-size:16px}.mcard .ic{font-size:27px}.mcard small{font-size:13px}
+  .train{padding:6px}.train svg{min-width:0}
+  .car{grid-template-columns:44px minmax(0,1fr);gap:4px 10px;padding:10px 12px}
+  .car .ic{grid-row:span 2;font-size:34px}.car .t{font-size:20px}.car .d{font-size:15px}
+  .car .st{grid-column:2;justify-self:start;font-size:15px;padding:2px 10px}
+  .pad{grid-template-columns:repeat(3,minmax(0,76px));gap:8px}.pad button{height:60px;font-size:26px}
+  .screen-code{gap:5px}.screen-code span{flex:1 1 0;width:auto;max-width:56px;min-width:0;height:62px;font-size:32px}
+  .digit{width:76px;height:76px;font-size:48px}
+  textarea{font-size:18px;padding:9px 10px}
+  input[type=text],input[type=password],select{font-size:19px}
+  .chipbtn{font-size:16px}
+  .road .node{grid-template-columns:36px minmax(0,1fr);gap:8px;padding:9px}.road .node .ic{font-size:26px}
+  .dream{padding:14px;border-radius:20px;box-shadow:5px 5px 0 var(--line)}
+  .pill{font-size:16px}.subj{font-size:16px;flex-wrap:wrap}
+  .toast{width:92vw;font-size:17px}
+  .modal{padding:10px}
+  .show{padding:10px;gap:10px}.show .slide{padding:14px;border-radius:18px;box-shadow:5px 5px 0 #0a2a36}
+  .show .ctrl .btn{flex:1 1 40%}
+}
+@media (max-height:500px) and (orientation:landscape){.topbar{position:static}}
 </style>
 </head>
 <body>
@@ -219,7 +286,7 @@ function snapshot() {
     elapsedSec: Math.floor(((S.endAt || Date.now()) - S.startAt) / 1000), hints: S.hints, keys: S.keys.filter(Boolean).length,
     roomIdx: S.keys.indexOf(false) === -1 ? 5 : S.keys.indexOf(false), stage: S.stage, done: !!S.submitted, status: S.status,
     values: S.values.map(v => v.label), barrier: S.barrier, light: S.light, dream: S.dream != null ? JOBS[S.dream].name : "",
-    dreamIc: S.dream != null ? JOBS[S.dream].ic : "", reflection: { future: (S.refl.future || "").slice(0, 400), learned: (S.refl.learned || "").slice(0, 400), todo: (S.refl.todo || "").slice(0, 400) } };
+    dreamIc: S.dream != null ? JOBS[S.dream].ic : "", reflection: { future: (S.refl.future || "").slice(0, 400), learned: (S.refl.learned || "").slice(0, 400), todo: (S.refl.todo || "").slice(0, 400), ...((S.refl.free || "").trim() ? { free: S.refl.free.trim().slice(0, 500) } : {}) } };
 }
 function save(now) {
   if (!S.runId) return;
@@ -394,7 +461,7 @@ const KIDS = {
 /* ================================================================
    상태·화면 이동(뒤로 가기)·공통 도구
    ================================================================ */
-function freshState() { return { runId: "", name: "", startAt: 0, endAt: 0, hints: 0, keys: [false, false, false, false, false], values: [], barrier: "", light: "", dream: null, refl: { future: "", learned: "", todo: "" }, submitted: false, status: "진행 중", stage: "출발 전", seen: [], visited: [] }; }
+function freshState() { return { runId: "", name: "", startAt: 0, endAt: 0, hints: 0, keys: [false, false, false, false, false], values: [], barrier: "", light: "", dream: null, refl: { future: "", learned: "", todo: "", free: "" }, submitted: false, status: "진행 중", stage: "출발 전", seen: [], visited: [] }; }
 let S = freshState();
 let HIST = [], TIMER = null, teacherPw = "";
 const app = document.getElementById("app");
@@ -409,14 +476,14 @@ function go(name, arg) { HIST.push({ name, arg }); SCREENS[name](arg); }
 function back() { if (HIST.length > 1) { HIST.pop(); const t = HIST[HIST.length - 1]; SCREENS[t.name](t.arg); } }
 function render(html) { app.innerHTML = html; window.scrollTo(0, 0); bindTop(); BGM.sync(!!$("#tbMusic")); }
 function topbar() {
-  return `<div class="topbar"><div class="tb"><button class="tbtn" id="tbBack" ${HIST.length > 1 ? "" : "disabled"}>◀ 뒤로</button><span class="who">🚆 ${esc(S.name)}</span></div>
+  return `<div class="topbar"><div class="tb"><button class="tbtn" id="tbBack" aria-label="뒤로" ${HIST.length > 1 ? "" : "disabled"}>◀<span class="lbl"> 뒤로</span></button><span class="who">🚆 ${esc(S.name)}</span></div>
   <div class="tb"><span class="clock" id="clock" aria-label="걸린 시간">⏱ ${fmt(elapsedSec())}</span><span class="keys" aria-label="모은 열쇠">${S.keys.map((k, i) => `<span class="keyslot ${k ? "got" : ""}">${k ? CODE[i] : "🔑"}</span>`).join("")}</span>
-  <button class="tbtn" id="tbMusic" aria-pressed="${BGM.enabled()}">${BGM.label()}</button><button class="tbtn" id="tbRestart">🔄 처음부터</button></div></div>`;
+  <button class="tbtn" id="tbMusic" aria-label="${BGM.label()}" aria-pressed="${BGM.enabled()}">${BGM.html()}</button><button class="tbtn" id="tbRestart" aria-label="처음부터">🔄<span class="lbl"> 처음부터</span></button></div></div>`;
 }
 function bindTop() {
   const b = $("#tbBack"); if (b) b.onclick = back;
   const r = $("#tbRestart"); if (r) r.onclick = askRestart;
-  const s = $("#tbMusic"); if (s) s.onclick = () => { BGM.toggle(); s.textContent = BGM.label(); s.setAttribute("aria-pressed", BGM.enabled()); };
+  const s = $("#tbMusic"); if (s) s.onclick = () => { BGM.toggle(); s.innerHTML = BGM.html(); s.setAttribute("aria-label", BGM.label()); s.setAttribute("aria-pressed", BGM.enabled()); };
 }
 function tick() { const c = $("#clock"); if (c) c.textContent = "⏱ " + fmt(elapsedSec()); }
 /* 배경음악: 음원 파일 없이 Web Audio로 직접 연주하는 자작 8비트 곡. 게임 화면에서만 나와요 */
@@ -477,7 +544,8 @@ const BGM = (() => {
   document.addEventListener("pointerdown", () => { if (ctx && playing && !document.hidden && ctx.state !== "running") ctx.resume(); });
   return {
     enabled: () => on,
-    label: () => on ? "🎵 음악 끄기" : "🔇 음악 켜기",
+    label: () => on ? "음악 끄기" : "음악 켜기",
+    html: () => `${on ? "🎵" : "🔇"}<span class="lbl"> ${on ? "음악 끄기" : "음악 켜기"}</span>`,
     sync(v) { inGame = v; apply(); },
     toggle() { on = !on; LS.set(KEY, on); apply(); }
   };
@@ -868,14 +936,18 @@ function reflect() {
     { k: "todo", q: "🏃 꿈을 위해 지금부터 할 일은…", chips: [`${S.light || "진로 선생님께 상담하기"}`, `${josa(j.skills[0], "을를")} 키우기 위해 노력하기`, "관련 영상이나 책 찾아보기", "고등학교 홈페이지에서 과목 확인하기", "하루에 하나씩 작은 목표 지키기"] }
   ];
   render(`${topbar()}<div class="card stack"><h2 style="font-size:30px">📝 나의 미래 소감</h2>
-    ${botSay("마지막이야! 아래 문장을 이어서 써 줘. 버튼을 누르면 문장이 들어가고, 고쳐 써도 돼.")}
-    ${P.map(p => `<div class="stack" style="gap:8px"><label for="t_${p.k}" class="disp" style="font-size:24px">${p.q}</label><div class="chips">${p.chips.map(c => `<button class="chipbtn" data-to="${p.k}">${esc(c)}</button>`).join("")}</div><textarea id="t_${p.k}" maxlength="300">${esc(S.refl[p.k])}</textarea></div>`).join("")}
+    ${botSay("마지막이야! 버튼으로 문장을 고르거나, 칸에 네 말로 직접 써도 좋아.")}
+    ${P.map(p => `<div class="stack" style="gap:8px"><label for="t_${p.k}" class="disp" style="font-size:24px">${p.q}</label><div class="chips">${p.chips.map(c => `<button class="chipbtn" data-to="${p.k}">${esc(c)}</button>`).join("")}</div><textarea id="t_${p.k}" maxlength="300" placeholder="위에서 고르거나 직접 써요">${esc(S.refl[p.k])}</textarea></div>`).join("")}
+    <div class="stack freebox" style="gap:8px"><label for="t_free" class="disp" style="font-size:24px">✍️ 내 생각 자유롭게 쓰기 <span class="muted" style="font-size:17px">(쓰고 싶을 때만)</span></label>
+      <textarea id="t_free" maxlength="500" style="min-height:130px" placeholder="오늘 활동하면서 느낀 점, 궁금한 점, 내 꿈 이야기를 마음껏 써요">${esc(S.refl.free)}</textarea><span class="count" id="freeCount" aria-live="polite">${(S.refl.free || "").length} / 500자</span></div>
     <p class="muted center" id="warn" style="margin:0"></p>
     <div class="center"><button class="btn coral big" id="sub">제출하기 📮</button></div></div>`);
   $$(".chipbtn").forEach(b => b.onclick = () => { const t = $("#t_" + b.dataset.to); t.value = (t.value.trim() ? t.value.trim() + " " : "") + b.textContent; S.refl[b.dataset.to] = t.value; save(); t.focus(); });
   P.forEach(p => $("#t_" + p.k).oninput = e => { S.refl[p.k] = e.target.value; save(); });
+  $("#t_free").oninput = e => { S.refl.free = e.target.value; $("#freeCount").textContent = `${e.target.value.length} / 500자`; save(); };
   $("#sub").onclick = () => {
     P.forEach(p => S.refl[p.k] = $("#t_" + p.k).value.trim());
+    S.refl.free = $("#t_free").value.trim();
     const empty = P.filter(p => S.refl[p.k].length < 3);
     if (empty.length) { $("#warn").textContent = `"${empty[0].q.slice(2)}" 칸을 조금만 더 써 줘요!`; $("#t_" + empty[0].k).classList.add("shake"); $("#t_" + empty[0].k).focus(); return; }
     S.submitted = true; S.status = "완료"; setStage("완료"); save(true); go("roadmap");
@@ -895,6 +967,7 @@ function roadmap() {
       ${node("🔭", "10년 뒤의 나", esc(S.refl.future))}
       ${node("💡", "새로 알게 된 것", esc(S.refl.learned))}
       ${node("🏃", "지금부터 할 일", esc(S.refl.todo))}
+      ${S.refl.free ? node("✍️", "나의 자유 소감", esc(S.refl.free)) : ""}
     </div>
     <div class="row between"><div class="pills"><span class="pill">⏱ ${fmt(elapsedSec())}</span><span class="pill">💡 힌트 ${S.hints}번</span><span class="pill" style="background:#c9f5d9">📮 제출 완료</span></div><div style="width:84px">${robot()}</div></div>
   </div>
@@ -978,9 +1051,9 @@ async function dash() {
   }
 }
 function copyCsv() {
-  const head = ["이름", "시작", "지금 위치", "완료", "걸린 시간", "힌트", "진로 가치", "꿈 직업", "진로 장벽", "해결 방법", "10년 뒤의 나", "새로 알게 된 것", "지금부터 할 일"];
+  const head = ["이름", "시작", "지금 위치", "완료", "걸린 시간", "힌트", "진로 가치", "꿈 직업", "진로 장벽", "해결 방법", "10년 뒤의 나", "새로 알게 된 것", "지금부터 할 일", "자유 소감"];
   const q = v => `"${String(v ?? "").replace(/"/g, '""')}"`;
-  const rows = DASH.runs.filter(r => r.status !== "다시 시작함").map(r => [r.name, r.startedAt ? new Date(r.startedAt).toLocaleString("ko-KR") : "", r.stage, r.done ? "완료" : "", fmt(r.elapsedSec || 0), r.hints || 0, (r.values || []).join(", "), r.dream, r.barrier, r.light, r.reflection?.future, r.reflection?.learned, r.reflection?.todo].map(q).join(","));
+  const rows = DASH.runs.filter(r => r.status !== "다시 시작함").map(r => [r.name, r.startedAt ? new Date(r.startedAt).toLocaleString("ko-KR") : "", r.stage, r.done ? "완료" : "", fmt(r.elapsedSec || 0), r.hints || 0, (r.values || []).join(", "), r.dream, r.barrier, r.light, r.reflection?.future, r.reflection?.learned, r.reflection?.todo, r.reflection?.free].map(q).join(","));
   const text = [head.map(q).join(","), ...rows].join("\n");
   navigator.clipboard.writeText(text).then(() => toast(`${rows.length}명 기록을 복사했어요. 엑셀이나 구글 시트에 붙여 넣으세요.`))
     .catch(() => modal(`<p>아래 내용을 모두 선택해 복사한 뒤 엑셀·구글 시트에 붙여 넣으세요.</p><textarea readonly style="min-height:240px">${esc(text)}</textarea><div class="center"><button class="btn" data-close>닫기</button></div>`));
@@ -1021,7 +1094,7 @@ function progTable(runs) {
 }
 function reflCards(done) {
   if (!done.length) return `<div class="card center"><p>아직 제출된 소감이 없어요.</p></div>`;
-  return `<div class="refls">${done.map(r => `<div class="refl" data-run="${esc(r.runId)}" tabindex="0" style="cursor:pointer"><div class="row between"><b class="disp" style="font-size:20px">${esc(r.name)}</b><span class="pill">${esc(r.dreamIc)} ${esc(r.dream)}</span></div><q>🔭 ${esc(r.reflection?.future)}</q><q>💡 ${esc(r.reflection?.learned)}</q><q>🏃 ${esc(r.reflection?.todo)}</q></div>`).join("")}</div>`;
+  return `<div class="refls">${done.map(r => `<div class="refl" data-run="${esc(r.runId)}" tabindex="0" style="cursor:pointer"><div class="row between"><b class="disp" style="font-size:20px">${esc(r.name)}</b><span class="pill">${esc(r.dreamIc)} ${esc(r.dream)}</span></div><q>🔭 ${esc(r.reflection?.future)}</q><q>💡 ${esc(r.reflection?.learned)}</q><q>🏃 ${esc(r.reflection?.todo)}</q>${r.reflection?.free ? `<q>✍️ ${esc(r.reflection.free)}</q>` : ""}</div>`).join("")}</div>`;
 }
 function runDetail(r) {
   if (!r) return;
@@ -1033,6 +1106,7 @@ function runDetail(r) {
     <div><b class="disp">🔭 10년 뒤의 나</b><br>${esc(r.reflection?.future) || "-"}</div>
     <div><b class="disp">💡 새로 알게 된 것</b><br>${esc(r.reflection?.learned) || "-"}</div>
     <div><b class="disp">🏃 지금부터 할 일</b><br>${esc(r.reflection?.todo) || "-"}</div>
+    ${r.reflection?.free ? `<div><b class="disp">✍️ 자유 소감</b><br>${esc(r.reflection.free)}</div>` : ""}
     <div class="center"><button class="btn" data-close>닫기</button></div></div>`);
 }
 const TALK = ["💬 이 친구의 꿈에서 멋진 점은 무엇일까요?", "🙌 이 친구에게 응원 한마디를 해 볼까요?", "🤔 나와 비슷한 점이나 다른 점이 있나요?", "🌊 이 꿈을 삼척에서 이룬다면 어디서 일할 수 있을까요?", "🔦 이 친구가 꿈을 이루려면 어떤 도움이 필요할까요?"];
@@ -1044,7 +1118,7 @@ function present(list) {
     el.innerHTML = `<div class="row between"><span class="disp" style="font-size:24px">🎬 삼척 꿈의 열차 · 미래 소감 나누기</span><div class="row"><button class="tbtn" id="sAnon">${anon ? "🙂 이름 보이기" : "🙈 이름 숨기기"}</button><button class="tbtn" id="sMix">🔀 섞기</button><button class="tbtn" id="sFull">⛶ 전체 화면</button><button class="tbtn" id="sX">✕ 닫기</button></div></div>
       <div class="slide pop"><div class="row between"><span class="sname">${who}</span><span class="sjob">${esc(r.dreamIc)} ${esc(r.dream)}</span></div>
         ${(r.values || []).length ? `<div class="pills">${r.values.map(v => `<span class="pill">${(V(v) || {}).ic || ""} ${esc(v)}</span>`).join("")}</div>` : ""}
-        <div class="sq"><div><b>🔭 10년 뒤의 나는…</b>${esc(r.reflection?.future)}</div><div><b>💡 오늘 새로 알게 된 것은…</b>${esc(r.reflection?.learned)}</div><div><b>🏃 꿈을 위해 지금부터 할 일은…</b>${esc(r.reflection?.todo)}</div></div>
+        <div class="sq"><div><b>🔭 10년 뒤의 나는…</b>${esc(r.reflection?.future)}</div><div><b>💡 오늘 새로 알게 된 것은…</b>${esc(r.reflection?.learned)}</div><div><b>🏃 꿈을 위해 지금부터 할 일은…</b>${esc(r.reflection?.todo)}</div>${r.reflection?.free ? `<div><b>✍️ 나의 자유 소감</b>${esc(r.reflection.free)}</div>` : ""}</div>
         <div class="talk">${TALK[i % TALK.length]}</div></div>
       <div class="ctrl"><button class="btn white" id="sPrev" ${i ? "" : "disabled"}>◀ 이전</button><span class="cnt">${i + 1} / ${order.length}</span><button class="btn coral" id="sNext" ${i < order.length - 1 ? "" : "disabled"}>다음 ▶</button><button class="btn white" id="sTalk">⏱ 이야기 시간 ${talkT ? fmt(talkSec) : "시작"}</button></div>`;
     $("#sPrev", el).onclick = () => { if (i) { i--; stopTalk(); draw(); } };

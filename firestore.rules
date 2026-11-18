@@ -29,8 +29,9 @@ service cloud.firestore {
         && d.hints is int && d.keys is int && d.elapsedSec is int && d.roomIdx is int
         && d.startedAt is number && d.updatedAt is number
         && d.done is bool
-        && d.reflection is map && d.reflection.keys().hasOnly(['future', 'learned', 'todo'])
-        && str(d.reflection.future, 400) && str(d.reflection.learned, 400) && str(d.reflection.todo, 400);
+        && d.reflection is map && d.reflection.keys().hasOnly(['future', 'learned', 'todo', 'free'])
+        && str(d.reflection.future, 400) && str(d.reflection.learned, 400) && str(d.reflection.todo, 400)
+        && (!('free' in d.reflection) || str(d.reflection.free, 500));
     }
 
     match /runs/{runId} {
